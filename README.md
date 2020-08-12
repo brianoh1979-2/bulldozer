@@ -6,6 +6,10 @@
 automatically merges pull requests (PRs) when (and only when) all required
 status checks are successful and required reviews are provided.
 
+*********************************************
+Adding in new comment to trigger pull request
+*********************************************
+
 Additionally, `bulldozer` can:
 
 - Only merge pull requests that match certain conditions, like having a
