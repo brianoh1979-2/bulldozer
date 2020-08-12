@@ -7,4 +7,4 @@ approval_rules:
   requires:
     count: 1
     teams:
-    - "Test-BOH/brian-team"
+    - "Test-BOH/Brian-team"
