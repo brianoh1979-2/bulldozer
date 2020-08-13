@@ -117,13 +117,13 @@
            requires:
             - build
        - aws-eks/create-cluster:
-          cluster-name: prod-clone
+           cluster-name: prod-clone
            requires:
-            - automated-tests
+             - automated-tests
        - test-cluster:
-          cluster-name: prod-clone
+           cluster-name: prod-clone
            requires:
-            - aws-eks/create-cluster
+             - aws-eks/create-cluster
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
            requires:
