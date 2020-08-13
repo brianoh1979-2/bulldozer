@@ -91,7 +91,7 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
-       - run: git branch deploy-$(date '+%d/%m/%Y %H:%M:%S')
+       - run: git branch deploy-$(date '+%d/%m/%Y %H-%M-%S')
 
  orbs:
    aws-eks: circleci/aws-eks@1.0.0
