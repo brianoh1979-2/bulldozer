@@ -92,13 +92,12 @@
      steps:
        - checkout
        - run:
-          name: Deploy Master to Heroku
+          name: Create deployment branch with today's date
           command: |
             dt=$(date +%F)
-            echo $dt
             dp=deploy-$dt
-            echo $dp
             git branch $dp
+            git branch
 
  orbs:
    aws-eks: circleci/aws-eks@1.0.0
