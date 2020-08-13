@@ -33,7 +33,7 @@
        - slack/notify:
            channel: CQ4NHT0DC
            color: '#42e2f4'
-           message: Please click on the following link and approve the on-hold job "dev-sign-off-approval" for the most recent run of $CIRCLE_BRANCH - https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+           message: Please click on the following link and approve the on-hold job "dev-sign-off-approval" for the most recent workflow run for the branch $CIRCLE_BRANCH - https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
            webhook: '${SLACK_WEBHOOK}'
 
    qa-sign-off:
@@ -44,7 +44,7 @@
        - slack/notify:
            channel: CQ4NHT0DC
            color: '#42e2f4'
-           message: Please click on the following link and approve the on-hold job "qa-sign-off-approval" for the most recent run of $CIRCLE_BRANCH - https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+           message: Please click on the following link and approve the on-hold job "qa-sign-off-approval" for the most recent workflow run for the branch $CIRCLE_BRANCH - https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
            webhook: '${SLACK_WEBHOOK}'
 
    build:
