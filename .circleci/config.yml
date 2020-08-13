@@ -118,6 +118,7 @@
             - build
        - aws-eks/create-cluster:
            aws-region: eu-west-1
+           cfn-role-arn: brian3__role
            cluster-name: prod-clone
            requires:
              - automated-tests
