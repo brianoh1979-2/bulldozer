@@ -91,7 +91,14 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
-       - run: git branch deploy-$(date)
+       - run:
+          name: Deploy Master to Heroku
+          command: |
+            dt=$(date +%F)
+            echo $dt
+            dp=deploy-$dt
+            echo $dp
+            git branch $dp
 
  orbs:
    aws-eks: circleci/aws-eks@1.0.0
