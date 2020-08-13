@@ -118,12 +118,10 @@
             - build
        - aws-eks/create-cluster:
           cluster-name: prod-clone
-            filters: { tags: { only: /.*/ } }
            requires:
             - automated-tests
        - test-cluster:
           cluster-name: prod-clone
-            filters: { tags: { only: /.*/ } }
            requires:
             - aws-eks/create-cluster
        - create-deploy-branch:
