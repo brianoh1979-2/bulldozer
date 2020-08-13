@@ -22,60 +22,22 @@ common:
       store_artifacts:
         path: *results-dir
         destination: test-results
-
-jobs:
-  build:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    docker:
-      - image: circleci/golang:1.13.4-stretch
-    steps:
-      - checkout
-      - *restore-godel-cache
-      - run: ./godelw version
-      - *save-godel-cache
-      - run: ./godelw build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build/bulldozer
-
-  automated-tests:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    environment:
-       TESTS_DIR: *results-dir
-    docker:
-      - image: circleci/golang:1.13.4-stretch
-    steps:
-      - checkout
-      - *restore-godel-cache
-      - run: ./godelw version
-      - *save-godel-cache
-      - run: mkdir -p "${TESTS_DIR}"
-      - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
-      - *store-results
-      - *store-artifacts
-
-  list-critical-changes:
-    docker:
-      - image: circleci/golang:1.13.4-stretch
-    steps:
-      - checkout
-      - run: echo "This job is listing all the critical changes introduced by the code"
-
-  dev-sign-off:
-    machine:
-      image: ubuntu-1604:202004-01
+# version: 2
+ jobs:
+   dev-sign-off:
+     machine:
+       image: ubuntu-1604:202004-01
      steps:
        - checkout
        - slack/notify:
            channel: CQ4NHT0DC
            color: '#42e2f4'
            message: Please click on the following link and approve the on-hold job "dev-sign-off-approval" - $CIRCLE_BUILD_URL/workflows/$CIRCLE_WORKFLOW_ID
-           webhook: '${SLACK_WEBHOOK}' 
+           webhook: '${SLACK_WEBHOOK}'
 
-  qa-sign-off:
-    machine:
-      image: ubuntu-1604:202004-01
+   qa-sign-off:
+     machine:
+       image: ubuntu-1604:202004-01
      steps:
        - checkout
        - slack/notify:
@@ -83,6 +45,44 @@ jobs:
            color: '#42e2f4'
            message: Please click on the following link and approve the on-hold job "qa-sign-off-approval" - $CIRCLE_BUILD_URL/workflows/$CIRCLE_WORKFLOW_ID
            webhook: '${SLACK_WEBHOOK}'
+
+   build:
+     working_directory: /go/src/github.com/palantir/bulldozer
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - *restore-godel-cache
+       - run: ./godelw version
+       - *save-godel-cache
+       - run: ./godelw build
+       - persist_to_workspace:
+           root: .
+           paths:
+             - build/bulldozer
+
+   automated-tests:
+     working_directory: /go/src/github.com/palantir/bulldozer
+     environment:
+        TESTS_DIR: *results-dir
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - *restore-godel-cache
+       - run: ./godelw version
+       - *save-godel-cache
+       - run: mkdir -p "${TESTS_DIR}"
+       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
+       - *store-results
+       - *store-artifacts
+
+   list-critical-changes:
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - run: echo "This job is listing all the critical changes introduced by the code"
 
  orbs:
    slack: circleci/slack@3.4.1
