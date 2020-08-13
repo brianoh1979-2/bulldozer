@@ -23,9 +23,6 @@ common:
         path: *results-dir
         destination: test-results
 
-### Jobs ###
-
-#version: 2
 jobs:
   build:
     working_directory: /go/src/github.com/palantir/bulldozer
@@ -90,42 +87,40 @@ jobs:
            message: Please click on the following link and approve the on-hold job "qa-sign-off-approval" - $CIRCLE_BUILD_URL/workflows/$CIRCLE_WORKFLOW_ID
            webhook: '${SLACK_WEBHOOK}'
 
-### Workflows ###
-
  orbs:
    slack: circleci/slack@3.4.1
  version: 2.1
 
-workflows:
-  version: 2
-  build:
-    jobs:
-      - dev-sign-off:
-          filters: { tags: { only: /.*/ } }
-      - dev-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-      - list-critical-changes:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - dev-sign-off
-      - build:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - dev-sign-off
-           - list-critical-changes
-      - automated-tests:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - build
-      - qa-sign-off:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - automated-tests
-      - qa-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-          requires: # We only run the "hold" job when test2 has succeeded
-           - automated-tests
-      - block-if-long-maintainer-and-next-window-is-not-saturday: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-          requires: # We only run the "hold" job when test2 has succeeded
-           - qa-sign-off
+ workflows:
+   version: 2
+   build:
+     jobs:
+       - dev-sign-off:
+           filters: { tags: { only: /.*/ } }
+       - dev-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
+           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+       - list-critical-changes:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - dev-sign-off
+       - build:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - dev-sign-off
+            - list-critical-changes
+       - automated-tests:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - build
+       - qa-sign-off:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - automated-tests
+       - qa-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
+           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+           requires: # We only run the "hold" job when test2 has succeeded
+            - automated-tests
+       - block-if-long-maintainer-and-next-window-is-not-saturday: # <<< A job that will require manual approval in the CircleCI web application.
+           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+           requires: # We only run the "hold" job when test2 has succeeded
+            - qa-sign-off
