@@ -116,17 +116,17 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
-       - aws-eks/create-cluster:
-           aws-region: eu-west-1
-           cfn-role-arn: brian3__role
-           cluster-name: prod-clone
-           requires:
-             - automated-tests
-       - test-cluster:
-           cluster-name: prod-clone
-           requires:
-             - aws-eks/create-cluster
+ #      - aws-eks/create-cluster:
+ #          aws-profile: 
+ #          aws-region: eu-west-1
+ #          cluster-name: prod-clone
+ #          requires:
+ #            - automated-tests
+ #      - test-cluster:
+ #          cluster-name: prod-clone
+ #          requires:
+ #            - aws-eks/create-cluster
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
-           requires:
-            - test-cluster
+ #          requires:
+ #           - test-cluster
