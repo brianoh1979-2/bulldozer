@@ -117,6 +117,7 @@
            requires:
             - build
        - aws-eks/create-cluster:
+           aws-region: eu-west-1
            cluster-name: prod-clone
            requires:
              - automated-tests
