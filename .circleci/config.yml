@@ -56,7 +56,6 @@ jobs:
       - *store-artifacts
 
   list-critical-changes:
-    working_directory: /go/src/github.com/palantir/bulldozer
     docker:
       - image: circleci/golang:1.13.4-stretch
     steps:
@@ -64,9 +63,8 @@ jobs:
       - run: echo "This job is listing all the critical changes introduced by the code"
 
   dev-sign-off:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    docker:
-      - image: circleci/golang:1.13.4-stretch
+    machine:
+      image: ubuntu-1604:202004-01
      steps:
        - checkout
        - slack/notify:
@@ -76,9 +74,8 @@ jobs:
            webhook: '${SLACK_WEBHOOK}' 
 
   qa-sign-off:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    docker:
-      - image: circleci/golang:1.13.4-stretch
+    machine:
+      image: ubuntu-1604:202004-01
      steps:
        - checkout
        - slack/notify:
