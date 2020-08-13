@@ -25,7 +25,7 @@ common:
 
 ### Jobs ###
 
-version: 2
+#version: 2
 jobs:
   build:
     working_directory: /go/src/github.com/palantir/bulldozer
@@ -66,13 +66,41 @@ jobs:
       - checkout
       - run: echo "This job is listing all the critical changes introduced by the code"
 
+  dev-sign-off:
+    docker:
+      - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - slack/notify:
+           channel: CQ4NHT0DC
+           color: '#42e2f4'
+           message: Please click on the following link and approve the on-hold job "dev-sign-off-approval" - $CIRCLE_BUILD_URL/workflows/$CIRCLE_WORKFLOW_ID
+           webhook: '${SLACK_WEBHOOK}' 
+
+  qa-sign-off:
+    docker:
+      - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - slack/notify:
+           channel: CQ4NHT0DC
+           color: '#42e2f4'
+           message: Please click on the following link and approve the on-hold job "qa-sign-off-approval" - $CIRCLE_BUILD_URL/workflows/$CIRCLE_WORKFLOW_ID
+           webhook: '${SLACK_WEBHOOK}'
+
 ### Workflows ###
+
+ orbs:
+   slack: circleci/slack@3.4.1
+ version: 2.1
 
 workflows:
   version: 2
   build:
     jobs:
-      - dev-sign-off: # <<< A job that will require manual approval in the CircleCI web application.
+      - dev-sign-off:
+          filters: { tags: { only: /.*/ } }
+      - dev-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
       - list-critical-changes:
           filters: { tags: { only: /.*/ } }
@@ -87,7 +115,11 @@ workflows:
           filters: { tags: { only: /.*/ } }
           requires:
            - build
-      - qa-sign-off: # <<< A job that will require manual approval in the CircleCI web application.
+      - qa-sign-off:
+          filters: { tags: { only: /.*/ } }
+          requires:
+           - automated-tests
+      - qa-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
           requires: # We only run the "hold" job when test2 has succeeded
            - automated-tests
