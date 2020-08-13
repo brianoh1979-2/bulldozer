@@ -119,6 +119,7 @@
        - aws-eks/create-cluster:
            aws-region: eu-west-1
            cluster-name: prod-clone
+           executor: machine
            requires:
              - automated-tests
        - test-cluster:
