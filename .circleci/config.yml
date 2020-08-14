@@ -124,12 +124,12 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
- #      - aws-eks/create-cluster:
- #          aws-profile: 
- #          aws-region: eu-west-1
- #          cluster-name: prod-clone
- #          requires:
- #            - automated-tests
+#       - aws-eks/create-cluster:
+#           aws-profile: 
+#           aws-region: eu-west-1
+#           cluster-name: prod-clone
+#           requires:
+#             - automated-tests
  #      - test-cluster:
  #          cluster-name: prod-clone
  #          requires:
@@ -138,3 +138,11 @@
            filters: { tags: { only: /.*/ } }
  #          requires:
  #           - test-cluster
+       - aws-eks/create-cluster:
+           filters: { tags: { only: production } }
+           aws-profile: 
+           aws-region: eu-west-1
+           cluster-name: prod-clone
+           requires:
+             - create-deploy-branch
+
