@@ -97,7 +97,9 @@
             dt=$(date +%F)
             dp=deploy-$dt
             git branch $dp
-            git branch
+            git branch production
+            git checkout production
+            git merge $dp
 
  orbs:
    aws-eks: circleci/aws-eks@1.0.0
