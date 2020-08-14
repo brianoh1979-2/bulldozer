@@ -139,7 +139,10 @@
  #          requires:
  #           - test-cluster
        - aws-eks/create-cluster:
-           filters: { tags: { only: production } }
+           filters:
+             branches:
+               only:
+                 - production
            aws-profile: 
            aws-region: eu-west-1
            cluster-name: prod-clone
