@@ -141,7 +141,7 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
-       - aws-eks/install-aws-iam-authenticator
+       - aws-eks/install-aws-iam-authenticator:
            requires:
              - automated-tests
        - aws-eks/create-cluster:
