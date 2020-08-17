@@ -145,6 +145,7 @@
            aws-profile: 
            aws-region: eu-west-1
            cluster-name: prod-clone
+           config-file: ~/.aws/config
            requires:
              - automated-tests
        - create-deployment:
