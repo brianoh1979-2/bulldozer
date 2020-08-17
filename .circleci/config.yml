@@ -163,14 +163,14 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - test-cluster
-       - aws-eks/create-cluster:
-           filters:
-             branches:
-               only:
-                 - production
-           aws-profile: 
-           aws-region: eu-west-1
-           cluster-name: prod-clone
-           requires:
-             - create-deploy-branch
+ #      - aws-eks/create-cluster:
+ #          filters:
+ #            branches:
+ #              only:
+ #                - production
+ #          aws-profile: 
+ #          aws-region: eu-west-1
+ #          cluster-name: prod-clone
+ #          requires:
+ #            - create-deploy-branch
 
