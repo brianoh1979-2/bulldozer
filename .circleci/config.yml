@@ -158,11 +158,11 @@
        - aws-eks/delete-cluster:
            cluster-name: eks-demo-deployment
            requires:
-             - aws-eks/test-cluster
+             - test-cluster
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
            requires:
-            - test-cluster
+            - aws-eks/delete-cluster
  #      - aws-eks/create-cluster:
  #          filters:
  #            branches:
