@@ -147,23 +147,6 @@
        - aws-eks/create-cluster:
            aws-region: eu-west-1
            cluster-name: prod-clone
-           nodegroup-name: "orbtest-ng-1"
-           node-type: "t2.large"
-           nodes: 4
-           nodes-min: 3
-           nodes-max: 4
-           node-volume-size: 30
-           node-volume-type: "gp2"
-           max-pods-per-node: 30
-           node-ami: "auto"
-           node-ami-family: "AmazonLinux2"
-           node-private-networking: false
-           node-labels: "nodeowner=cci_brian,nodepurpose=testing_brian"
-           vpc-cidr: "192.168.0.0/16"
-           aws-max-polling-wait-time: "25m"
-           tags: "name=cci_orbs_brian,purpose=orb_test_brian"
-           verbose: 3
-           show-eksctl-command: true
            requires:
              - automated-tests
        - create-deployment:
