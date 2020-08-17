@@ -25,6 +25,23 @@
 
 # version: 2
  jobs:
+   create-deployment:
+     executor: aws-eks/python3
+     parameters:
+       cluster-name:
+         description: |
+           Name of the EKS cluster
+         type: string
+     steps:
+       - checkout
+       - aws-eks/update-kubeconfig-with-authenticator:
+           cluster-name: << parameters.cluster-name >>
+           install-kubectl: true
+       - kubernetes/create-or-update-resource:
+           get-rollout-status: true
+           resource-file-path: tests/nginx-deployment/deployment.yaml
+           resource-name: deployment/nginx-deployment
+
    test-cluster:
      executor: aws-eks/python3
      parameters:
@@ -124,20 +141,28 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
-#       - aws-eks/create-cluster:
-#           aws-profile: 
-#           aws-region: eu-west-1
-#           cluster-name: prod-clone
-#           requires:
-#             - automated-tests
- #      - test-cluster:
- #          cluster-name: prod-clone
- #          requires:
- #            - aws-eks/create-cluster
+       - aws-eks/create-cluster:
+           aws-profile: 
+           aws-region: eu-west-1
+           cluster-name: prod-clone
+           requires:
+             - automated-tests
+       - create-deployment:
+           cluster-name: eks-demo-deployment
+           requires:
+             - aws-eks/create-cluster
+       - test-cluster:
+           cluster-name: prod-clone
+           requires:
+             - aws-eks/create-cluster
+       - aws-eks/delete-cluster:
+           cluster-name: eks-demo-deployment
+           requires:
+             - aws-eks/test-cluster
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
- #          requires:
- #           - test-cluster
+           requires:
+            - test-cluster
        - aws-eks/create-cluster:
            filters:
              branches:
