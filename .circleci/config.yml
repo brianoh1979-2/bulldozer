@@ -141,9 +141,9 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
-       - aws-eks/install-aws-iam-authenticator:
-           requires:
-             - automated-tests
+#       - aws-eks/install-aws-iam-authenticator:
+#           requires:
+#             - automated-tests
        - aws-eks/create-cluster:
            aws-region: eu-west-1
            cluster-name: prod-clone
@@ -165,7 +165,7 @@
            verbose: 3
            show-eksctl-command: true
            requires:
-             - aws-eks/install-aws-iam-authenticator
+             - automated-tests
        - create-deployment:
            cluster-name: eks-demo-deployment
            requires:
