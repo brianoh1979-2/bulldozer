@@ -150,7 +150,7 @@
            requires:
              - automated-tests
        - create-deployment:
-           cluster-name: eks-demo-deployment
+           cluster-name: prod-clone
            requires:
              - aws-eks/create-cluster
        - test-cluster:
@@ -158,7 +158,7 @@
            requires:
              - aws-eks/create-cluster
        - aws-eks/delete-cluster:
-           cluster-name: eks-demo-deployment
+           cluster-name: prod-clone
            requires:
              - test-cluster
        - create-deploy-branch:
