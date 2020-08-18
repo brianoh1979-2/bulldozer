@@ -146,19 +146,19 @@
 #             - automated-tests
        - aws-eks/create-cluster:
            aws-region: eu-west-1
-           cluster-name: prod-clone
+           cluster-name: prod-clone2
            requires:
              - automated-tests
        - create-deployment:
-           cluster-name: prod-clone
+           cluster-name: prod-clone2
            requires:
              - aws-eks/create-cluster
        - test-cluster:
-           cluster-name: prod-clone
+           cluster-name: prod-clone2
            requires:
              - aws-eks/create-cluster
        - aws-eks/delete-cluster:
-           cluster-name: prod-clone
+           cluster-name: prod-clone2
            requires:
              - test-cluster
        - create-deploy-branch:
