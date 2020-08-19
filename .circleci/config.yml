@@ -121,7 +121,7 @@
               git branch production
               git checkout production
               git merge $dp
-              git push origin production
+              git push -u origin production:production
               bash test-deployment.sh
             else
               echo "Now is not the time to deploy"
