@@ -114,9 +114,15 @@
             dt=$(date +%F)
             dp=deploy-$dt
             git branch $dp
-            git branch production
-            git checkout production
-            git merge $dp
+            now=(date +"%T")
+            if [[ $now -eq "06:00:00" ]] 
+            then 
+              git branch production
+              git checkout production
+              git merge $dp
+            else
+              echo "Now is not the time to deploy"
+            fi
 
  orbs:
    aws-eks: circleci/aws-eks@1.0.0
@@ -144,27 +150,27 @@
 #       - aws-eks/install-aws-iam-authenticator:
 #           requires:
 #             - automated-tests
-       - aws-eks/create-cluster:
-           aws-region: eu-west-1
-           cluster-name: prod-clone2
-           requires:
-             - automated-tests
-       - create-deployment:
-           cluster-name: prod-clone2
-           requires:
-             - aws-eks/create-cluster
-       - test-cluster:
-           cluster-name: prod-clone2
-           requires:
-             - aws-eks/create-cluster
-       - aws-eks/delete-cluster:
-           cluster-name: prod-clone2
-           requires:
-             - test-cluster
-       - create-deploy-branch:
-           filters: { tags: { only: /.*/ } }
-           requires:
-            - aws-eks/delete-cluster
+#       - aws-eks/create-cluster:
+#           aws-region: eu-west-1
+#           cluster-name: prod-clone2
+#           requires:
+#             - automated-tests
+#       - create-deployment:
+#           cluster-name: prod-clone2
+#           requires:
+#             - aws-eks/create-cluster
+#       - test-cluster:
+#           cluster-name: prod-clone2
+#           requires:
+#             - aws-eks/create-cluster
+#       - aws-eks/delete-cluster:
+#           cluster-name: prod-clone2
+#           requires:
+#             - test-cluster
+#       - create-deploy-branch:
+#           filters: { tags: { only: /.*/ } }
+#           requires:
+#            - aws-eks/delete-cluster
  #      - aws-eks/create-cluster:
  #          filters:
  #            branches:
