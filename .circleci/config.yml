@@ -114,8 +114,8 @@
             dt=$(date +%F)
             dp=deploy-$dt
             git branch $dp
-            now=(date +"%T")
-            if [[ $now -eq '06:00:00' ]] 
+            currenttime=$(date +%H:%M)
+            if [[ "$currenttime" > "05:59" ]] || [[ "$currenttime" < "06:01" ]]; then 
             then 
               git branch production
               git checkout production
