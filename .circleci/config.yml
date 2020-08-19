@@ -116,7 +116,8 @@
             git branch $dp
             currenttime=$(date +%H:%M)
             echo $currenttime
-            if [[ "$currenttime" > "05:59" ]] || [[ "$currenttime" < "06:01" ]];  
+   #         if [[ "$currenttime" > "05:59" ]] || [[ "$currenttime" < "06:01" ]];
+            if [[ "$currenttime" = "06:00" ]];  
             then 
               git branch production
               git checkout production
