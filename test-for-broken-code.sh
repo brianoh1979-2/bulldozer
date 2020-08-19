@@ -1,6 +1,6 @@
 currenttime=$(date +%H:%M)
 echo $currenttime
-if [[ "$currenttime" != "06:00" ]];
+if [[ "$currenttime" = "06:00" ]];
 then
   echo "The code looks good - proceeding with deployment" 
   exit 0

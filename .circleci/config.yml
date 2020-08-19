@@ -196,7 +196,7 @@
        - test-cluster:
            cluster-name: prod-clone2
            requires:
-             - aws-eks/create-cluster
+             - create-deployment
        - test-code-on-K8S:
            filters: { tags: { only: /.*/ } }
            requires:
