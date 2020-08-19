@@ -121,6 +121,8 @@
               git branch production
               git checkout production
               git merge $dp
+              git remote set-url origin https://github.com/brianoh1979/bulldozer.git
+              git remote -v
               git push -u origin production:production
               bash test-deployment.sh
             else
