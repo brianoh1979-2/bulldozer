@@ -121,10 +121,9 @@
               git branch production
               git checkout production
               git merge $dp
-              git remote set-url origin https://github.com/brianoh1979/bulldozer.git
+              bash test-deployment.sh
               git remote -v
               git push -u origin production:production
-              bash test-deployment.sh
             else
               echo "Now is not the time to deploy"
             fi
