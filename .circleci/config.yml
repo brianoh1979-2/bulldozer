@@ -127,6 +127,16 @@
               echo "Now is not the time to deploy"
             fi
 
+   test-code-on-K8S:
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - run:
+          name: Test the deployment Kubernetes cluster for broken code
+          command: |
+            bash test-for-broken-code.sh
+
    deployment-description-alert:
      docker:
        - image: circleci/golang:1.13.4-stretch
@@ -174,9 +184,6 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - automated-tests
-       - aws-eks/install-aws-iam-authenticator:
-           requires:
-             - automated-tests       
        - aws-eks/create-cluster:
            aws-region: eu-west-1
            cluster-name: prod-clone2
@@ -190,12 +197,17 @@
            cluster-name: prod-clone2
            requires:
              - aws-eks/create-cluster
+       - test-code-on-K8S:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - test-cluster
        - aws-eks/delete-cluster:
            cluster-name: prod-clone2
            requires:
-             - test-cluster
+             - aws-eks/create-cluster
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
            requires:
             - aws-eks/delete-cluster
+            - test-code-on-K8S
 
