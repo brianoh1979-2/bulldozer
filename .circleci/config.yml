@@ -116,14 +116,13 @@
             git branch $dp
             currenttime=$(date +%H:%M)
             echo $currenttime
-            if [[ "$currenttime" != "06:00" ]];  
+            if [[ "$currenttime" = "06:00" ]];  
             then 
               git branch production
               git checkout production
               git merge $dp
-              bash test-deployment.sh
-              git remote -v
               git push -u origin production:production
+              bash test-deployment.sh
             else
               echo "Now is not the time to deploy"
             fi
@@ -146,8 +145,16 @@
  version: 2.1
 
  workflows:
-   version: 2
+#   version: 2
    build:
+     triggers:
+      - schedule:
+          cron: "0 0-23 * * 1-6"
+          filters:
+            branches:
+              only:
+                - master
+  
      jobs:
        - check-downtime:
            filters: { tags: { only: /.*/ } }
