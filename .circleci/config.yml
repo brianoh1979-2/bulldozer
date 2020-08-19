@@ -174,38 +174,28 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - automated-tests
-#       - aws-eks/install-aws-iam-authenticator:
-#           requires:
-#             - automated-tests       
-#       - aws-eks/create-cluster:
-#           aws-region: eu-west-1
-#           cluster-name: prod-clone2
-#           requires:
-#             - automated-tests
-#       - create-deployment:
-#           cluster-name: prod-clone2
-#           requires:
-#             - aws-eks/create-cluster
-#       - test-cluster:
-#           cluster-name: prod-clone2
-#           requires:
-#             - aws-eks/create-cluster
-#       - aws-eks/delete-cluster:
-#           cluster-name: prod-clone2
-#           requires:
-#             - test-cluster
+       - aws-eks/install-aws-iam-authenticator:
+           requires:
+             - automated-tests       
+       - aws-eks/create-cluster:
+           aws-region: eu-west-1
+           cluster-name: prod-clone2
+           requires:
+             - automated-tests
+       - create-deployment:
+           cluster-name: prod-clone2
+           requires:
+             - aws-eks/create-cluster
+       - test-cluster:
+           cluster-name: prod-clone2
+           requires:
+             - aws-eks/create-cluster
+       - aws-eks/delete-cluster:
+           cluster-name: prod-clone2
+           requires:
+             - test-cluster
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
-#           requires:
-#            - aws-eks/delete-cluster
- #      - aws-eks/create-cluster:
- #          filters:
- #            branches:
- #              only:
- #                - production
- #          aws-profile: 
- #          aws-region: eu-west-1
- #          cluster-name: prod-clone
- #          requires:
- #            - create-deploy-branch
+           requires:
+            - aws-eks/delete-cluster
 
