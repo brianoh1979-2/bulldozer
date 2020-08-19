@@ -167,8 +167,8 @@
 #           cluster-name: prod-clone2
 #           requires:
 #             - test-cluster
-#       - create-deploy-branch:
-#           filters: { tags: { only: /.*/ } }
+       - create-deploy-branch:
+           filters: { tags: { only: /.*/ } }
 #           requires:
 #            - aws-eks/delete-cluster
  #      - aws-eks/create-cluster:
