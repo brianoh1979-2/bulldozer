@@ -116,7 +116,7 @@
             git branch $dp
             currenttime=$(date +%H:%M)
             echo $currenttime
-            if [[ "$currenttime" = "06:00" ]];  
+            if [[ "$currenttime" != "06:00" ]];  
             then 
               git branch production
               git checkout production
@@ -204,7 +204,7 @@
        - aws-eks/delete-cluster:
            cluster-name: prod-clone2
            requires:
-             - aws-eks/create-cluster
+             - test-code-on-K8S
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
            requires:
