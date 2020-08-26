@@ -1,5 +1,6 @@
 #Comment to trigger new pull request
 #merge when ready
+#Switched on Only Build Pull requests feature for this project
 common:
   godel-cache:
     key: &godel-cache-key v1-godel-cache-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
