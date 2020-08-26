@@ -1,5 +1,18 @@
 #Comment to trigger new pull request
 #merge when ready
+common:
+  godel-cache:
+    key: &godel-cache-key v1-godel-cache-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
+    <<: &restore-godel-cache
+      restore_cache:
+        keys:
+          - *godel-cache-key
+    <<: &save-godel-cache
+      save_cache:
+        key: *godel-cache-key
+        paths:
+          - ~/.godel
+
  common:
    godel-cache:
      key: &godel-cache-key v1-godel-cache-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
@@ -12,6 +25,7 @@
          key: *godel-cache-key
          paths:
            - ~/.godel
+
 
    test-results:
      dir: &results-dir /tmp/test-results
