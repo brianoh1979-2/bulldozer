@@ -1,6 +1,5 @@
 #Comment to trigger new pull request
 #merge when ready
-#Switched on Only Build Pull requests feature for this project
 common:
   godel-cache:
     key: &godel-cache-key v1-godel-cache-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
@@ -14,85 +13,129 @@ common:
         paths:
           - ~/.godel
 
-  test-results:
-    dir: &results-dir /tmp/test-results
-    <<: &store-results
-      store_test_results:
-        path: *results-dir
-    <<: &store-artifacts
-      store_artifacts:
-        path: *results-dir
-        destination: test-results
+ common:
+   godel-cache:
+     key: &godel-cache-key v1-godel-cache-{{ checksum "godelw" }}-{{ checksum "godel/config/godel.yml" }}
+     <<: &restore-godel-cache
+       restore_cache:
+         keys:
+           - *godel-cache-key
+     <<: &save-godel-cache
+       save_cache:
+         key: *godel-cache-key
+         paths:
+           - ~/.godel
 
-### Jobs ###
 
-version: 2
-jobs:
-  build:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    docker:
-      - image: circleci/golang:1.13.4-stretch
-    steps:
-      - checkout
-      - *restore-godel-cache
-      - run: ./godelw version
-      - *save-godel-cache
-      - run: ./godelw build
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build/bulldozer
+   test-results:
+     dir: &results-dir /tmp/test-results
+     <<: &store-results
+       store_test_results:
+         path: *results-dir
+     <<: &store-artifacts
+       store_artifacts:
+         path: *results-dir
+         destination: test-results
 
-  automated-tests:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    environment:
-       TESTS_DIR: *results-dir
-    docker:
-      - image: circleci/golang:1.13.4-stretch
-    steps:
-      - checkout
-      - *restore-godel-cache
-      - run: ./godelw version
-      - *save-godel-cache
-      - run: mkdir -p "${TESTS_DIR}"
-      - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
-      - *store-results
-      - *store-artifacts
+# version: 2
+ jobs:
+   dev-sign-off:
+     machine:
+       image: ubuntu-1604:202004-01
+     steps:
+       - checkout
+       - slack/notify:
+           channel: CQ4NHT0DC
+           color: '#42e2f4'
+           message: Please click on the following link and approve the on-hold job "dev-sign-off-approval" for the most recent workflow run for the branch / commit $CIRCLE_BRANCH - https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+           webhook: '${SLACK_WEBHOOK}'
 
-  list-critical-changes:
-    working_directory: /go/src/github.com/palantir/bulldozer
-    docker:
-      - image: circleci/golang:1.13.4-stretch
-    steps:
-      - checkout
-      - run: echo "This job is listing all the critical changes introduced by the code"
+   qa-sign-off:
+     machine:
+       image: ubuntu-1604:202004-01
+     steps:
+       - checkout
+       - slack/notify:
+           channel: CQ4NHT0DC
+           color: '#42e2f4'
+           message: Please click on the following link and approve the on-hold job "qa-sign-off-approval" for the most recent workflow run for the branch / commit $CIRCLE_BRANCH - https://app.circleci.com/pipelines/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+           webhook: '${SLACK_WEBHOOK}'
 
-### Workflows ###
+   build:
+     working_directory: /go/src/github.com/palantir/bulldozer
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - *restore-godel-cache
+       - run: ./godelw version
+       - *save-godel-cache
+       - run: ./godelw build
+       - persist_to_workspace:
+           root: .
+           paths:
+             - build/bulldozer
 
-workflows:
-  version: 2
-  build:
-    jobs:
-      - dev-sign-off: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-      - list-critical-changes:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - dev-sign-off
-      - build:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - dev-sign-off
-           - list-critical-changes
-      - automated-tests:
-          filters: { tags: { only: /.*/ } }
-          requires:
-           - build
-      - qa-sign-off: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-          requires: # We only run the "hold" job when test2 has succeeded
-           - automated-tests
-      - block-if-long-maintainer-and-next-window-is-not-saturday: # <<< A job that will require manual approval in the CircleCI web application.
-          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-          requires: # We only run the "hold" job when test2 has succeeded
-           - qa-sign-off
+   automated-tests:
+     working_directory: /go/src/github.com/palantir/bulldozer
+     environment:
+        TESTS_DIR: *results-dir
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - *restore-godel-cache
+       - run: ./godelw version
+       - *save-godel-cache
+       - run: mkdir -p "${TESTS_DIR}"
+       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
+       - *store-results
+       - *store-artifacts
+
+   list-critical-changes:
+     docker:
+       - image: circleci/golang:1.13.4-stretch
+     steps:
+       - checkout
+       - run: echo "This job is listing all the critical changes introduced by the code"
+
+ orbs:
+   slack: circleci/slack@3.4.1
+ version: 2.1
+
+ workflows:
+   version: 2
+   build:
+     jobs:
+       - dev-sign-off:
+           filters: { tags: { only: /.*/ } }
+       - dev-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
+           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"        
+       - list-critical-changes:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - dev-sign-off
+            - dev-sign-off-approval
+       - build:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - dev-sign-off
+            - dev-sign-off-approval
+            - list-critical-changes
+       - automated-tests:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - build
+       - qa-sign-off:
+           filters: { tags: { only: /.*/ } }
+           requires:
+            - automated-tests
+       - qa-sign-off-approval: # <<< A job that will require manual approval in the CircleCI web application.
+           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+           requires: # We only run the "hold" job when test2 has succeeded
+            - automated-tests
+       - block-if-long-maintainer-and-next-window-is-not-saturday: # <<< A job that will require manual approval in the CircleCI web application.
+           type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+           requires: # We only run the "hold" job when test2 has succeeded
+            - qa-sign-off
+            - qa-sign-off-approval
