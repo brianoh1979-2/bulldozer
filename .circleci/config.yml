@@ -70,10 +70,10 @@
 #       - run: ./godelw version
        - *save-godel-cache
 #       - run: ./godelw build
-       - persist_to_workspace:
-           root: .
-           paths:
-             - build/bulldozer
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - build/bulldozer
 
    automated-tests:
      working_directory: /go/src/github.com/palantir/bulldozer
