@@ -31,7 +31,6 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
-
        - run: echo "feature5 branch"
        - run: echo $foo1
        - *restore-godel-cache
@@ -48,15 +47,6 @@
        - checkout
        - run: echo "This is the automated-tests job"
        - run: mkdir -p "${TESTS_DIR}"
-       - *store-results
-       - *store-artifacts
-
-   check-downtime:
-       - *restore-godel-cache
-       - run: ./godelw version
-       - *save-godel-cache
-       - run: mkdir -p "${TESTS_DIR}"
-       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
        - *store-results
        - *store-artifacts
 
@@ -128,12 +118,8 @@
  workflows:
    build:  
      jobs:
-       - check-downtime:
-           filters: { tags: { only: /.*/ } }
        - prepare-ffcommit:
            filters: { tags: { only: /.*/ } }
-           requires:
-            - check-downtime
        - build:
            context:
              - foo236
