@@ -82,6 +82,7 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
+       - run: echo "This is the automated-tests job"
        - *restore-godel-cache
        - run: ./godelw version
        - *save-godel-cache
