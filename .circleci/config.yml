@@ -25,55 +25,18 @@
 
 # version: 2
  jobs:
-   create-deployment:
-     executor: aws-eks/python3
-     parameters:
-       cluster-name:
-         description: |
-           Name of the EKS cluster
-         type: string
-     steps:
-       - checkout
-       - aws-eks/update-kubeconfig-with-authenticator:
-           cluster-name: << parameters.cluster-name >>
-           install-kubectl: true
-       - kubernetes/create-or-update-resource:
-           get-rollout-status: true
-           resource-file-path: tests/nginx-deployment/deployment.yaml
-           resource-name: deployment/nginx-deployment
-
-   test-cluster:
-     executor: aws-eks/python3
-     parameters:
-       cluster-name:
-         description: |
-           Name of the EKS cluster
-         type: string
-     steps:
-       - kubernetes/install
-       - aws-eks/update-kubeconfig-with-authenticator:
-           cluster-name: << parameters.cluster-name >>
-       - run:
-           command: |
-             kubectl get services
-           name: Test cluster
-
    build:
      working_directory: /go/src/github.com/palantir/bulldozer
      docker:
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
+
        - run: echo "feature5 branch"
        - run: echo $foo1
        - *restore-godel-cache
-#       - run: ./godelw version
        - *save-godel-cache
-#       - run: ./godelw build
-#       - persist_to_workspace:
-#           root: .
-#           paths:
-#             - build/bulldozer
+
 
    automated-tests:
      working_directory: /go/src/github.com/palantir/bulldozer
@@ -84,15 +47,20 @@
      steps:
        - checkout
        - run: echo "This is the automated-tests job"
-#       - *restore-godel-cache
-#       - run: ./godelw version
-#       - *save-godel-cache
        - run: mkdir -p "${TESTS_DIR}"
-#       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
        - *store-results
        - *store-artifacts
 
    check-downtime:
+       - *restore-godel-cache
+       - run: ./godelw version
+       - *save-godel-cache
+       - run: mkdir -p "${TESTS_DIR}"
+       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
+       - *store-results
+       - *store-artifacts
+
+   list-critical-changes:
      docker:
        - image: circleci/golang:1.13.4-stretch
      steps:
@@ -176,34 +144,6 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
-#       - deployment-description-alert:
-#           filters: { tags: { only: /.*/ } }
-#           requires:
-#            - automated-tests
-#       - aws-eks/create-cluster:
-#           aws-region: eu-west-1
-#           cluster-name: prod-clone3
-#           requires:
-#             - automated-tests
-#       - create-deployment:
-#           cluster-name: prod-clone3
-#           requires:
-#             - aws-eks/create-cluster
-#       - test-cluster:
-#           cluster-name: prod-clone3
-#           requires:
-#             - create-deployment
-#       - test-code-on-K8S:
-#           filters: { tags: { only: /.*/ } }
-#           requires:
-#            - test-cluster
-#       - aws-eks/delete-cluster:
-#           cluster-name: prod-clone3
-#           requires:
-#             - test-code-on-K8S
-#       - create-deploy-branch:
-#           filters: { tags: { only: /.*/ } }
-#           requires:
-#            - aws-eks/delete-cluster
-#            - test-code-on-K8S
 
+
+ 
