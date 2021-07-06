@@ -64,7 +64,7 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
-       - echo $AWS_AREA
+       - run: echo $AWS_AREA
        - *restore-godel-cache
        - run: ./godelw version
        - *save-godel-cache
