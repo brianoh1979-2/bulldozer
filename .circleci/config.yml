@@ -84,11 +84,11 @@
      steps:
        - checkout
        - run: echo "This is the automated-tests job"
-       - *restore-godel-cache
-       - run: ./godelw version
-       - *save-godel-cache
+#       - *restore-godel-cache
+#       - run: ./godelw version
+#       - *save-godel-cache
        - run: mkdir -p "${TESTS_DIR}"
-       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
+#       - run: ./godelw verify --apply=false --junit-output="$TESTS_DIR/$CIRCLE_PROJECT_REPONAME-tests.xml"
        - *store-results
        - *store-artifacts
 
