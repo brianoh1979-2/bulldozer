@@ -64,7 +64,7 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
-       - run: echo "feature5"
+       - run: echo "feature5 branch"
        - run: echo $foo1
        - *restore-godel-cache
        - run: ./godelw version
