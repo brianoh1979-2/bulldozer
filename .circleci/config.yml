@@ -69,7 +69,7 @@
        - *restore-godel-cache
 #       - run: ./godelw version
        - *save-godel-cache
-       - run: ./godelw build
+#       - run: ./godelw build
        - persist_to_workspace:
            root: .
            paths:
