@@ -67,7 +67,7 @@
        - run: echo "feature5 branch"
        - run: echo $foo1
        - *restore-godel-cache
-       - run: ./godelw version
+#       - run: ./godelw version
        - *save-godel-cache
        - run: ./godelw build
        - persist_to_workspace:
