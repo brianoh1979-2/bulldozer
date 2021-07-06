@@ -64,7 +64,7 @@
        - image: circleci/golang:1.13.4-stretch
      steps:
        - checkout
-       - run: echo $AWS_AREA
+       - run: echo $foo1
        - *restore-godel-cache
        - run: ./godelw version
        - *save-godel-cache
@@ -166,7 +166,7 @@
             - check-downtime
        - build:
            context:
-             - Brian-Context
+             - foo236
            filters: { tags: { only: /.*/ } }
            requires:
             - prepare-ffcommit
