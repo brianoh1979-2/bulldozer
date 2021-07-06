@@ -176,34 +176,34 @@
            filters: { tags: { only: /.*/ } }
            requires:
             - build
-       - deployment-description-alert:
-           filters: { tags: { only: /.*/ } }
-           requires:
-            - automated-tests
-       - aws-eks/create-cluster:
-           aws-region: eu-west-1
-           cluster-name: prod-clone3
-           requires:
-             - automated-tests
-       - create-deployment:
-           cluster-name: prod-clone3
-           requires:
-             - aws-eks/create-cluster
-       - test-cluster:
-           cluster-name: prod-clone3
-           requires:
-             - create-deployment
-       - test-code-on-K8S:
-           filters: { tags: { only: /.*/ } }
-           requires:
-            - test-cluster
-       - aws-eks/delete-cluster:
-           cluster-name: prod-clone3
-           requires:
-             - test-code-on-K8S
+#       - deployment-description-alert:
+#           filters: { tags: { only: /.*/ } }
+#           requires:
+#            - automated-tests
+#       - aws-eks/create-cluster:
+#           aws-region: eu-west-1
+#           cluster-name: prod-clone3
+#           requires:
+#             - automated-tests
+#       - create-deployment:
+#           cluster-name: prod-clone3
+#           requires:
+#             - aws-eks/create-cluster
+#       - test-cluster:
+#           cluster-name: prod-clone3
+#           requires:
+#             - create-deployment
+#       - test-code-on-K8S:
+#           filters: { tags: { only: /.*/ } }
+#           requires:
+#            - test-cluster
+#       - aws-eks/delete-cluster:
+#           cluster-name: prod-clone3
+#           requires:
+#             - test-code-on-K8S
        - create-deploy-branch:
            filters: { tags: { only: /.*/ } }
-           requires:
-            - aws-eks/delete-cluster
-            - test-code-on-K8S
+#           requires:
+#            - aws-eks/delete-cluster
+#            - test-code-on-K8S
 
